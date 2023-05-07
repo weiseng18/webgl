@@ -1,4 +1,5 @@
 let gl, program, buffer;
+let circles = new CircleArray();
 
 const shaders = {
     vertex: `
@@ -94,36 +95,11 @@ function click(e) {
         y: e.pageY - this.offsetTop
     };
 
-    // Set up vertices
-    const radius = 100;
-    let vertices = [];
-    const points = 1000;
-    for (let i = 0; i < points; i++) {
-        const r = 2 * Math.PI * i / points;
-        const x = pos.x + radius * Math.cos(r);
-        const y = pos.y + radius * Math.sin(r);
-
-        // Scale to clip space
-        const clipX = x / this.width * 2 - 1;
-        const clipY = y / this.height * -2 + 1;
-        vertices.push(clipX, clipY);
-    }
-
-    // Set color
-    const color = {
-        r: Math.random(),
-        g: Math.random(),
-        b: Math.random()
-    };
-    const colorLocation = gl.getUniformLocation(program, "color");
-    gl.uniform4fv(colorLocation, [color.r, color.g, color.b, 1.0]);
-    
-    // Set up vertex buffer
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+    // Add a new circle to the array
+    circles.newCircle(pos);
 
     // Draw
-    gl.clear(gl.COLOR_BUFFER_BIT);
-    gl.drawArrays(gl.LINE_LOOP, 0, points);
+    circles.draw(gl);
 }
 
 (function() {
