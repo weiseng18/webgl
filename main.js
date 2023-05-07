@@ -6,7 +6,7 @@ const shaders = {
     attribute vec2 position;
     void main() {
         gl_Position = vec4(position, 0, 1.0);
-        gl_PointSize = 10.0;
+        gl_PointSize = 30.0;
     }
     `,
     fragment: `
@@ -86,6 +86,9 @@ function setup(e) {
 
     // Attach event listener
     document.querySelector("canvas").addEventListener("click", click, false);
+
+    // Start animation loop
+    tick();
 }
 
 function click(e) {
@@ -100,6 +103,12 @@ function click(e) {
 
     // Draw
     circles.draw(gl);
+}
+
+function tick() {
+    circles.tick();
+    circles.draw(gl);
+    requestAnimationFrame(tick);
 }
 
 (function() {

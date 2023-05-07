@@ -1,9 +1,10 @@
 // Circle class
 class Circle {
-    constructor(pos, color, radius) {
+    constructor(pos, color, radius, speed) {
         this.pos = pos;
         this.color = color;
         this.radius = radius;
+        this.speed = speed;
     }
 }
 
@@ -22,7 +23,28 @@ class CircleArray {
             g: Math.random(),
             b: Math.random()
         };
-        this.circles.push(new Circle(pos, color, radius));
+        const speed = Math.random() * 3;
+        this.circles.push(new Circle(pos, color, radius, speed));
+    }
+
+    tick() {
+        // Each circle should grow and once it hits the wall, it should shrink.
+        // Then, once it hits a certain size, it should start growing again.
+        for (let i=0; i<this.circles.length; i++) {
+            const cur = this.circles[i];
+            cur.radius += cur.speed;
+
+            // If circle hits the wall, start shrinking
+            if (cur.pos.x + cur.radius > gl.canvas.width || cur.pos.x - cur.radius < 0 ||
+                cur.pos.y + cur.radius > gl.canvas.height || cur.pos.y - cur.radius < 0) {
+                cur.speed *= -1;
+            }
+
+            // If circle degenerates to a point, start growing again
+            if (cur.radius <= 0) {
+                cur.speed *= -1;
+            }
+        }
     }
 
     draw(gl) {
