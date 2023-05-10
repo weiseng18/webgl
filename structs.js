@@ -68,9 +68,9 @@ class CircleArray {
 
         // color
         const HSL = {
-            h: randInt(0, 255),
+            h: randInt(0, 360),
             s: 100,
-            l: 50
+            l: randInt(0, 50)
         };
         // convert to RGB
         const RGB = hslToRgb(HSL.h, HSL.s, HSL.l);
