@@ -190,4 +190,23 @@ class SoundPlayer {
         const audio = new Audio(file);
         audio.play();
     }
+
+    sound1() {
+        const t = 100;
+        circles.newCircle({x: 100, y: 100});
+        setTimeout(() => circles.newCircle({x: 740, y: 100}), t);
+        setTimeout(() => circles.newCircle({x: 740, y: 575}, 0.2), 2*t);
+        setTimeout(() => circles.newCircle({x: 260, y: 535}), 3*t);
+    }
+
+    sound2() {
+        const t = 1000;
+        for (let i=0; i<10; i++) {
+            const x = randInt(100, gl.canvas.width - 100);
+            const y = randInt(100, gl.canvas.height - 100);
+            setTimeout(() => {
+                circles.newCircle({x, y})
+            }, i*t);
+        }
+    }
 }

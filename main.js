@@ -90,6 +90,10 @@ function setup(e) {
 
     // Start animation loop
     tick(player);
+
+    // Attach sample sounds
+    document.getElementById("sound1").addEventListener("click", player.sound1, false);
+    document.getElementById("sound2").addEventListener("click", player.sound2, false);
 }
 
 function click(e) {
