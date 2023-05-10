@@ -1,5 +1,6 @@
 let gl, program, buffer;
 let circles = new CircleArray();
+let player = new SoundPlayer(800, 600);
 
 const shaders = {
     vertex: `
@@ -88,7 +89,7 @@ function setup(e) {
     document.querySelector("canvas").addEventListener("click", click, false);
 
     // Start animation loop
-    tick();
+    tick(player);
 }
 
 function click(e) {
@@ -106,7 +107,7 @@ function click(e) {
 }
 
 function tick() {
-    circles.tick();
+    circles.tick(player);
     circles.draw(gl);
     requestAnimationFrame(tick);
 }

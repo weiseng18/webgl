@@ -50,7 +50,7 @@ class CircleArray {
         this.circles.push(new Circle(pos, color, radius, speed));
     }
 
-    tick() {
+    tick(player) {
         // Keep track of which circles have already collided
         let hasCollision = [];
         for (let i=0; i<this.circles.length; i++) {
@@ -86,8 +86,12 @@ class CircleArray {
         // Update circles
         for (let i=0; i<this.circles.length; i++) {
             // check for collision, then update radius
-            if (hasCollision[i])
+            if (hasCollision[i]) {
+                // reverse speed growth
                 this.circles[i].speed *= -1;
+                // play sound
+                player.playSound(this.circles[i].radius);
+            }
             this.circles[i].radius += this.circles[i].speed;
 
             // handle degenerate case
@@ -124,5 +128,30 @@ class CircleArray {
             gl.uniform4fv(colorLocation, [cur.color.r, cur.color.g, cur.color.b, 1.0]);
             gl.drawArrays(gl.LINE_LOOP, i*this.points, this.points);
         }
+    }
+}
+
+class SoundPlayer {
+    constructor(height, width) {
+        this.SOUNDS = 12;
+        this.MAX_RADIUS = Math.min(height, width) / 2;
+        this.sounds = ["A", "As", "B", "C", "Cs", "D", "Ds", "E", "F", "Fs", "G", "Gs"];
+    }
+
+    quantize(radius) {
+        return Math.floor(radius / this.MAX_RADIUS * this.SOUNDS);
+    }
+
+    getSoundFile(q) {
+        return "notes/" + this.sounds[q] + ".mp3";
+    }
+
+    // Given the current radius of a circle which has collided with another circle,
+    // quantize it and play the corresponding sound.
+    playSound(radius) {
+        const q = this.quantize(radius);
+        const file = this.getSoundFile(q);
+        const audio = new Audio(file);
+        audio.play();
     }
 }
