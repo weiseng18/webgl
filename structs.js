@@ -177,7 +177,7 @@ class SoundPlayer {
     }
 
     getSoundFile(q) {
-        return "notes/" + this.sounds[q] + ".mp3";
+        return "notes/" + this.sounds[q] + "4.mp3";
     }
 
     // Given the current radius of a circle which has collided with another circle,
