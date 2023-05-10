@@ -168,7 +168,12 @@ class SoundPlayer {
     }
 
     quantize(radius) {
-        return Math.floor(radius / this.MAX_RADIUS * this.SOUNDS);
+        // Split into 12k buckets, then take the remainder mod 12 to get the sound
+        const k = 5;
+        const buckets = this.SOUNDS * k;
+        const bucketSize = this.MAX_RADIUS / buckets;
+        const q = Math.floor(radius / bucketSize);
+        return q % this.SOUNDS;
     }
 
     getSoundFile(q) {
