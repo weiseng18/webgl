@@ -63,7 +63,7 @@ class CircleArray {
         this.circles = [];
     }
 
-    newCircle(pos) {
+    newCircle(pos, speed) {
         const radius = 1;
 
         // color
@@ -75,7 +75,9 @@ class CircleArray {
         // convert to RGB
         const RGB = hslToRgb(HSL.h, HSL.s, HSL.l);
 
-        const speed = Math.random() * 0.5 + 1;
+        if (speed == undefined)
+            speed = Math.random() * 0.5 + 1;
+
         this.circles.push(new Circle(pos, RGB, radius, speed));
     }
 
