@@ -1,3 +1,27 @@
+// -----------------
+// Helper functions
+// -----------------
+function randInt(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function hslToRgb(h, s, l) {
+    // Code taken from https://www.30secondsofcode.org/js/s/hsl-to-rgb/
+    s /= 100;
+    l /= 100;
+    const k = n => (n + h / 30) % 12;
+    const a = s * Math.min(l, 1 - l);
+    const f = n =>
+        l - a * Math.max(-1, Math.min(k(n) - 3, Math.min(9 - k(n), 1)));
+    
+    return {
+        r: 255 * f(0),
+        g: 255 * f(8),
+        b: 255 * f(4)
+    }
+}
+
+
 // Circle class
 class Circle {
     constructor(pos, color, radius, speed) {
@@ -41,29 +65,34 @@ class CircleArray {
 
     newCircle(pos) {
         const radius = 1;
-        const color = {
-            r: Math.random(),
-            g: Math.random(),
-            b: Math.random()
+
+        // color
+        const HSL = {
+            h: randInt(0, 255),
+            s: 100,
+            l: 50
         };
+        // convert to RGB
+        const RGB = hslToRgb(HSL.h, HSL.s, HSL.l);
+
         const speed = Math.random() * 0.5 + 1;
-        this.circles.push(new Circle(pos, color, radius, speed));
+        this.circles.push(new Circle(pos, RGB, radius, speed));
     }
 
     tick(player) {
         // Keep track of which circles have already collided
         let hasCollision = [];
-        for (let i=0; i<this.circles.length; i++) {
+        for (let i = 0; i < this.circles.length; i++) {
             hasCollision.push(false);
         }
 
         // Create copy and increase radius by the speed
         let cpy = this.circles.slice();
-        for (let i=0; i<cpy.length; i++) {
+        for (let i = 0; i < cpy.length; i++) {
             cpy[i].radius += cpy[i].speed;
         }
 
-        for (let i=0; i<cpy.length; i++) {
+        for (let i = 0; i < cpy.length; i++) {
             let c1 = cpy[i];
 
             // check for collision with edge of canvas
@@ -72,9 +101,9 @@ class CircleArray {
                 hasCollision[i] = true;
                 continue;
             }
-            
+
             // check for collision with other circles
-            for (let j=i+1; j<cpy.length; j++) {
+            for (let j = i + 1; j < cpy.length; j++) {
                 let c2 = cpy[j];
                 if (c1.checkIntersection(c2)) {
                     hasCollision[i] = true;
@@ -84,7 +113,7 @@ class CircleArray {
         }
 
         // Update circles
-        for (let i=0; i<this.circles.length; i++) {
+        for (let i = 0; i < this.circles.length; i++) {
             // check for collision, then update radius
             if (hasCollision[i]) {
                 // reverse speed growth
@@ -105,9 +134,9 @@ class CircleArray {
     draw(gl) {
         // Set up vertex buffer
         let vertices = [];
-        for (let i=0; i<this.circles.length; i++) {
+        for (let i = 0; i < this.circles.length; i++) {
             const cur = this.circles[i];
-            for (let j=0; j<this.points; j++) {
+            for (let j = 0; j < this.points; j++) {
                 const r = 2 * Math.PI * j / this.points;
                 const x = cur.pos.x + cur.radius * Math.cos(r);
                 const y = cur.pos.y + cur.radius * Math.sin(r);
@@ -122,11 +151,11 @@ class CircleArray {
 
         // Draw
         gl.clear(gl.COLOR_BUFFER_BIT);
-        for (let i=0; i<this.circles.length; i++) {
+        for (let i = 0; i < this.circles.length; i++) {
             const cur = this.circles[i];
             const colorLocation = gl.getUniformLocation(program, "color");
             gl.uniform4fv(colorLocation, [cur.color.r, cur.color.g, cur.color.b, 1.0]);
-            gl.drawArrays(gl.LINE_LOOP, i*this.points, this.points);
+            gl.drawArrays(gl.LINE_LOOP, i * this.points, this.points);
         }
     }
 }
