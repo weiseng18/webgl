@@ -40,7 +40,7 @@ class CircleArray {
     }
 
     newCircle(pos) {
-        const radius = 100;
+        const radius = 1;
         const color = {
             r: Math.random(),
             g: Math.random(),
